@@ -1,0 +1,5171 @@
+{
+  "C:\\Users\\brian\\OneDrive\\Documentos\\Amazon_Lite\\Taller_Products\\Taller_Products\\serverless.yml": {
+    "versionFramework": "4.46.0",
+    "servicePath": "C:\\Users\\brian\\OneDrive\\Documentos\\Amazon_Lite\\Taller_Products\\Taller_Products\\serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "taller-products",
+      "frameworkVersion": "4",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs22.x",
+        "stage": "prod",
+        "region": "us-east-1",
+        "environment": {
+          "STAGE": "prod",
+          "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+          "PRODUCTS_TABLE": {
+            "Ref": "ProductsTable"
+          }
+        },
+        "apiGateway": {
+          "restApiId": {
+            "Fn::ImportValue": "prod-MainRestApiId"
+          },
+          "restApiRootResourceId": {
+            "Fn::ImportValue": "prod-MainRestApiRootResourceId"
+          }
+        },
+        "iamRoleStatements": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:PutItem",
+              "dynamodb:GetItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:DeleteItem",
+              "dynamodb:Query",
+              "dynamodb:Scan"
+            ],
+            "Resource": [
+              {
+                "Fn::GetAtt": [
+                  "ProductsTable",
+                  "Arn"
+                ]
+              },
+              {
+                "Fn::Sub": "${ProductsTable.Arn}/index/*"
+              }
+            ]
+          }
+        ],
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "CreateProductLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-prod-Products-Create"
+              }
+            },
+            "GetProductLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-prod-Products-GetProduct"
+              }
+            },
+            "UpdateProductLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-prod-Products-Update"
+              }
+            },
+            "DeleteProductLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-prod-Products-Delete"
+              }
+            },
+            "ListAllProductsLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-prod-Products-ListAllProducts"
+              }
+            },
+            "ListProductsBySellerLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-prod-Products-ListProductsBySeller"
+              }
+            },
+            "UpdateStockLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-prod-Products-UpdateStock"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "taller-products",
+                          "prod",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Create:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-GetProduct:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Update:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Delete:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListAllProducts:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListProductsBySeller:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-UpdateStock:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Create:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-GetProduct:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Update:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Delete:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListAllProducts:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListProductsBySeller:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-UpdateStock:*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogGroup",
+                            "logs:CreateLogStream",
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": "*"
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "dynamodb:PutItem",
+                            "dynamodb:GetItem",
+                            "dynamodb:UpdateItem",
+                            "dynamodb:DeleteItem",
+                            "dynamodb:Query",
+                            "dynamodb:Scan"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::GetAtt": [
+                                "ProductsTable",
+                                "Arn"
+                              ]
+                            },
+                            {
+                              "Fn::Sub": "${ProductsTable.Arn}/index/*"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "taller-products",
+                      "prod",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                }
+              }
+            },
+            "CreateProductLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                  "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+                },
+                "Handler": "src/handlers/createProduct.createProduct",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-prod-Products-Create",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "prod",
+                    "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                    "PRODUCTS_TABLE": {
+                      "Ref": "ProductsTable"
+                    },
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "CreateProductLogGroup"
+              ]
+            },
+            "GetProductLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                  "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+                },
+                "Handler": "src/handlers/getProduct.getProduct",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-prod-Products-GetProduct",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "prod",
+                    "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                    "PRODUCTS_TABLE": {
+                      "Ref": "ProductsTable"
+                    },
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "GetProductLogGroup"
+              ]
+            },
+            "UpdateProductLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                  "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+                },
+                "Handler": "src/handlers/updateProduct.updateProduct",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-prod-Products-Update",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "prod",
+                    "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                    "PRODUCTS_TABLE": {
+                      "Ref": "ProductsTable"
+                    },
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "UpdateProductLogGroup"
+              ]
+            },
+            "DeleteProductLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                  "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+                },
+                "Handler": "src/handlers/deleteProduct.deleteProduct",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-prod-Products-Delete",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "prod",
+                    "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                    "PRODUCTS_TABLE": {
+                      "Ref": "ProductsTable"
+                    },
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "DeleteProductLogGroup"
+              ]
+            },
+            "ListAllProductsLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                  "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+                },
+                "Handler": "src/handlers/listAllProducts.listAllProducts",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-prod-Products-ListAllProducts",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "prod",
+                    "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                    "PRODUCTS_TABLE": {
+                      "Ref": "ProductsTable"
+                    },
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "ListAllProductsLogGroup"
+              ]
+            },
+            "ListProductsBySellerLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                  "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+                },
+                "Handler": "src/handlers/listProductsBySeller.listProductsBySeller",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-prod-Products-ListProductsBySeller",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "prod",
+                    "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                    "PRODUCTS_TABLE": {
+                      "Ref": "ProductsTable"
+                    },
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "ListProductsBySellerLogGroup"
+              ]
+            },
+            "UpdateStockLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                  "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+                },
+                "Handler": "src/handlers/updateStock.updateStock",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-prod-Products-UpdateStock",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "prod",
+                    "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                    "PRODUCTS_TABLE": {
+                      "Ref": "ProductsTable"
+                    },
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "UpdateStockLogGroup"
+              ]
+            },
+            "CreateProductLambdaVersionT5QRC47U8wXAi6hXY1Rz37JpbJ2Kvm6nZ5NKd8jaJU": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "CreateProductLambdaFunction"
+                },
+                "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+              }
+            },
+            "GetProductLambdaVersion1JGdoVnfSRT498re6g46cXBDiEyfAFrCokJSRbolM": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "GetProductLambdaFunction"
+                },
+                "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+              }
+            },
+            "DeleteProductLambdaVersionuegwQb7zY4mrma4TFx7EK8T5WpEFr5ib1JrUGIY118": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "DeleteProductLambdaFunction"
+                },
+                "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+              }
+            },
+            "UpdateProductLambdaVersionq1PhyaWGNwaLlPF0TpqkjCO7d0Iziwmni7a8D7WIY": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "UpdateProductLambdaFunction"
+                },
+                "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+              }
+            },
+            "ListAllProductsLambdaVersionRbIcim7xNo7BcrXlzNBu0fCv91fdYxx2KjmRznovsQ": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "ListAllProductsLambdaFunction"
+                },
+                "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+              }
+            },
+            "UpdateStockLambdaVersionPTSxBpSYL4sQN72E30gBukkqTOMAU4Y129TTnyjgrnQ": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "UpdateStockLambdaFunction"
+                },
+                "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+              }
+            },
+            "ListProductsBySellerLambdaVersionHRAlWpBs5FaLzXYqC69TPLWrgZbY0yilpPnxthw5aZA": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "ListProductsBySellerLambdaFunction"
+                },
+                "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+              }
+            },
+            "ApiGatewayResourceProducts": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Fn::ImportValue": "prod-MainRestApiRootResourceId"
+                },
+                "PathPart": "products",
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceProductsCreate": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceProducts"
+                },
+                "PathPart": "create",
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceProductsIdVar": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceProducts"
+                },
+                "PathPart": "{id}",
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceProductsIdVarStock": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceProductsIdVar"
+                },
+                "PathPart": "stock",
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceProductsUsers": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceProducts"
+                },
+                "PathPart": "users",
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceProductsUsersSelleridVar": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceProductsUsers"
+                },
+                "PathPart": "{sellerId}",
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodProductsCreateOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsCreate"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodProductsIdVarOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,PUT,GET'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsIdVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodProductsOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProducts"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodProductsUsersSelleridVarOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsUsersSelleridVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodProductsIdVarStockOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PATCH'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsIdVarStock"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodProductsCreatePost": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "POST",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsCreate"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "CUSTOM",
+                "AuthorizerId": {
+                  "Fn::ImportValue": "prod-MainAuthorizerId"
+                },
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "CreateProductLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "CreateProductLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodProductsIdVarGet": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "GET",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsIdVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "GetProductLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "GetProductLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodProductsIdVarPut": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "PUT",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsIdVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "CUSTOM",
+                "AuthorizerId": {
+                  "Fn::ImportValue": "prod-MainAuthorizerId"
+                },
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "UpdateProductLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "UpdateProductLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodProductsIdVarDelete": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "DELETE",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsIdVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "CUSTOM",
+                "AuthorizerId": {
+                  "Fn::ImportValue": "prod-MainAuthorizerId"
+                },
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "DeleteProductLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "DeleteProductLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodProductsGet": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "GET",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProducts"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "ListAllProductsLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "ListAllProductsLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodProductsUsersSelleridVarGet": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "GET",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsUsersSelleridVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "ListProductsBySellerLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "ListProductsBySellerLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodProductsIdVarStockPatch": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "PATCH",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProductsIdVarStock"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "CUSTOM",
+                "AuthorizerId": {
+                  "Fn::ImportValue": "prod-MainAuthorizerId"
+                },
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "UpdateStockLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "UpdateStockLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayDeployment1794013969855": {
+              "Type": "AWS::ApiGateway::Deployment",
+              "Properties": {
+                "RestApiId": {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                "StageName": "prod"
+              },
+              "DependsOn": [
+                "ApiGatewayMethodProductsCreateOptions",
+                "ApiGatewayMethodProductsIdVarOptions",
+                "ApiGatewayMethodProductsOptions",
+                "ApiGatewayMethodProductsUsersSelleridVarOptions",
+                "ApiGatewayMethodProductsIdVarStockOptions",
+                "ApiGatewayMethodProductsCreatePost",
+                "ApiGatewayMethodProductsIdVarGet",
+                "ApiGatewayMethodProductsIdVarPut",
+                "ApiGatewayMethodProductsIdVarDelete",
+                "ApiGatewayMethodProductsGet",
+                "ApiGatewayMethodProductsUsersSelleridVarGet",
+                "ApiGatewayMethodProductsIdVarStockPatch"
+              ]
+            },
+            "CreateProductLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "CreateProductLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "prod-MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "GetProductLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "GetProductLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "prod-MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "UpdateProductLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "UpdateProductLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "prod-MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "DeleteProductLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "DeleteProductLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "prod-MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "ListAllProductsLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "ListAllProductsLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "prod-MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "ListProductsBySellerLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "ListProductsBySellerLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "prod-MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "UpdateStockLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "UpdateStockLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "prod-MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "ProductsTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "taller-products-prod-products",
+                "BillingMode": "PAY_PER_REQUEST",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "productId",
+                    "AttributeType": "S"
+                  },
+                  {
+                    "AttributeName": "sellerId",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "productId",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "GlobalSecondaryIndexes": [
+                  {
+                    "IndexName": "SellerIndex",
+                    "KeySchema": [
+                      {
+                        "AttributeName": "sellerId",
+                        "KeyType": "HASH"
+                      }
+                    ],
+                    "Projection": {
+                      "ProjectionType": "ALL"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "Export": {
+                "Name": "sls-taller-products-prod-ServerlessDeploymentBucketName"
+              }
+            },
+            "CreateProductLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "CreateProductLambdaVersionT5QRC47U8wXAi6hXY1Rz37JpbJ2Kvm6nZ5NKd8jaJU"
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-CreateProductLambdaFunctionQualifiedArn"
+              }
+            },
+            "GetProductLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "GetProductLambdaVersion1JGdoVnfSRT498re6g46cXBDiEyfAFrCokJSRbolM"
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-GetProductLambdaFunctionQualifiedArn"
+              }
+            },
+            "DeleteProductLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "DeleteProductLambdaVersionuegwQb7zY4mrma4TFx7EK8T5WpEFr5ib1JrUGIY118"
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-DeleteProductLambdaFunctionQualifiedArn"
+              }
+            },
+            "UpdateProductLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "UpdateProductLambdaVersionq1PhyaWGNwaLlPF0TpqkjCO7d0Iziwmni7a8D7WIY"
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-UpdateProductLambdaFunctionQualifiedArn"
+              }
+            },
+            "ListAllProductsLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "ListAllProductsLambdaVersionRbIcim7xNo7BcrXlzNBu0fCv91fdYxx2KjmRznovsQ"
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-ListAllProductsLambdaFunctionQualifiedArn"
+              }
+            },
+            "UpdateStockLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "UpdateStockLambdaVersionPTSxBpSYL4sQN72E30gBukkqTOMAU4Y129TTnyjgrnQ"
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-UpdateStockLambdaFunctionQualifiedArn"
+              }
+            },
+            "ListProductsBySellerLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "ListProductsBySellerLambdaVersionHRAlWpBs5FaLzXYqC69TPLWrgZbY0yilpPnxthw5aZA"
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-ListProductsBySellerLambdaFunctionQualifiedArn"
+              }
+            },
+            "ServiceEndpoint": {
+              "Description": "URL of the service endpoint",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "https://",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    ".execute-api.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    },
+                    "/prod"
+                  ]
+                ]
+              },
+              "Export": {
+                "Name": "sls-taller-products-prod-ServiceEndpoint"
+              }
+            }
+          }
+        },
+        "vpc": {}
+      },
+      "functions": {
+        "createProduct": {
+          "name": "taller-prod-Products-Create",
+          "handler": "src/handlers/createProduct.createProduct",
+          "events": [
+            {
+              "http": {
+                "method": "post",
+                "path": "products/create",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "POST"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "authorizer": {
+                  "type": "CUSTOM",
+                  "managedExternally": false,
+                  "authorizerId": {
+                    "Fn::ImportValue": "prod-MainAuthorizerId"
+                  },
+                  "resultTtlInSeconds": 300,
+                  "identitySource": "method.request.header.Authorization",
+                  "claims": []
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "CreateProductLambdaVersionT5QRC47U8wXAi6hXY1Rz37JpbJ2Kvm6nZ5NKd8jaJU"
+        },
+        "getProduct": {
+          "name": "taller-prod-Products-GetProduct",
+          "handler": "src/handlers/getProduct.getProduct",
+          "events": [
+            {
+              "http": {
+                "method": "get",
+                "path": "products/{id}",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "GET"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "GetProductLambdaVersion1JGdoVnfSRT498re6g46cXBDiEyfAFrCokJSRbolM"
+        },
+        "updateProduct": {
+          "name": "taller-prod-Products-Update",
+          "handler": "src/handlers/updateProduct.updateProduct",
+          "events": [
+            {
+              "http": {
+                "method": "put",
+                "path": "products/{id}",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "PUT"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "authorizer": {
+                  "type": "CUSTOM",
+                  "managedExternally": false,
+                  "authorizerId": {
+                    "Fn::ImportValue": "prod-MainAuthorizerId"
+                  },
+                  "resultTtlInSeconds": 300,
+                  "identitySource": "method.request.header.Authorization",
+                  "claims": []
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "UpdateProductLambdaVersionq1PhyaWGNwaLlPF0TpqkjCO7d0Iziwmni7a8D7WIY"
+        },
+        "deleteProduct": {
+          "name": "taller-prod-Products-Delete",
+          "handler": "src/handlers/deleteProduct.deleteProduct",
+          "events": [
+            {
+              "http": {
+                "method": "delete",
+                "path": "products/{id}",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "DELETE"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "authorizer": {
+                  "type": "CUSTOM",
+                  "managedExternally": false,
+                  "authorizerId": {
+                    "Fn::ImportValue": "prod-MainAuthorizerId"
+                  },
+                  "resultTtlInSeconds": 300,
+                  "identitySource": "method.request.header.Authorization",
+                  "claims": []
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "DeleteProductLambdaVersionuegwQb7zY4mrma4TFx7EK8T5WpEFr5ib1JrUGIY118"
+        },
+        "listAllProducts": {
+          "name": "taller-prod-Products-ListAllProducts",
+          "handler": "src/handlers/listAllProducts.listAllProducts",
+          "events": [
+            {
+              "http": {
+                "method": "get",
+                "path": "products",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "GET"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "ListAllProductsLambdaVersionRbIcim7xNo7BcrXlzNBu0fCv91fdYxx2KjmRznovsQ"
+        },
+        "listProductsBySeller": {
+          "name": "taller-prod-Products-ListProductsBySeller",
+          "handler": "src/handlers/listProductsBySeller.listProductsBySeller",
+          "events": [
+            {
+              "http": {
+                "method": "get",
+                "path": "products/users/{sellerId}",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "GET"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "ListProductsBySellerLambdaVersionHRAlWpBs5FaLzXYqC69TPLWrgZbY0yilpPnxthw5aZA"
+        },
+        "updateStock": {
+          "name": "taller-prod-Products-UpdateStock",
+          "handler": "src/handlers/updateStock.updateStock",
+          "events": [
+            {
+              "http": {
+                "method": "patch",
+                "path": "products/{id}/stock",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "PATCH"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "authorizer": {
+                  "type": "CUSTOM",
+                  "managedExternally": false,
+                  "authorizerId": {
+                    "Fn::ImportValue": "prod-MainAuthorizerId"
+                  },
+                  "resultTtlInSeconds": 300,
+                  "identitySource": "method.request.header.Authorization",
+                  "claims": []
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "UpdateStockLambdaVersionPTSxBpSYL4sQN72E30gBukkqTOMAU4Y129TTnyjgrnQ"
+        }
+      },
+      "resources": {
+        "Resources": {
+          "ProductsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "taller-products-prod-products",
+              "BillingMode": "PAY_PER_REQUEST",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "productId",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "sellerId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "productId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "GlobalSecondaryIndexes": [
+                {
+                  "IndexName": "SellerIndex",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "sellerId",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "Outputs": {}
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs22.x",
+      "stage": "prod",
+      "region": "us-east-1",
+      "environment": {
+        "STAGE": "prod",
+        "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+        "PRODUCTS_TABLE": {
+          "Ref": "ProductsTable"
+        }
+      },
+      "apiGateway": {
+        "restApiId": {
+          "Fn::ImportValue": "prod-MainRestApiId"
+        },
+        "restApiRootResourceId": {
+          "Fn::ImportValue": "prod-MainRestApiRootResourceId"
+        }
+      },
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          "Resource": "*"
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:PutItem",
+            "dynamodb:GetItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:Query",
+            "dynamodb:Scan"
+          ],
+          "Resource": [
+            {
+              "Fn::GetAtt": [
+                "ProductsTable",
+                "Arn"
+              ]
+            },
+            {
+              "Fn::Sub": "${ProductsTable.Arn}/index/*"
+            }
+          ]
+        }
+      ],
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "CreateProductLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-prod-Products-Create"
+            }
+          },
+          "GetProductLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-prod-Products-GetProduct"
+            }
+          },
+          "UpdateProductLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-prod-Products-Update"
+            }
+          },
+          "DeleteProductLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-prod-Products-Delete"
+            }
+          },
+          "ListAllProductsLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-prod-Products-ListAllProducts"
+            }
+          },
+          "ListProductsBySellerLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-prod-Products-ListProductsBySeller"
+            }
+          },
+          "UpdateStockLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-prod-Products-UpdateStock"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "taller-products",
+                        "prod",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Create:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-GetProduct:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Update:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Delete:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListAllProducts:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListProductsBySeller:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-UpdateStock:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Create:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-GetProduct:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Update:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Delete:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListAllProducts:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListProductsBySeller:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-UpdateStock:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogGroup",
+                          "logs:CreateLogStream",
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": "*"
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:PutItem",
+                          "dynamodb:GetItem",
+                          "dynamodb:UpdateItem",
+                          "dynamodb:DeleteItem",
+                          "dynamodb:Query",
+                          "dynamodb:Scan"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "ProductsTable",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::Sub": "${ProductsTable.Arn}/index/*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "taller-products",
+                    "prod",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "CreateProductLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+              },
+              "Handler": "src/handlers/createProduct.createProduct",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-prod-Products-Create",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "prod",
+                  "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                  "PRODUCTS_TABLE": {
+                    "Ref": "ProductsTable"
+                  },
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CreateProductLogGroup"
+            ]
+          },
+          "GetProductLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+              },
+              "Handler": "src/handlers/getProduct.getProduct",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-prod-Products-GetProduct",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "prod",
+                  "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                  "PRODUCTS_TABLE": {
+                    "Ref": "ProductsTable"
+                  },
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetProductLogGroup"
+            ]
+          },
+          "UpdateProductLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+              },
+              "Handler": "src/handlers/updateProduct.updateProduct",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-prod-Products-Update",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "prod",
+                  "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                  "PRODUCTS_TABLE": {
+                    "Ref": "ProductsTable"
+                  },
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateProductLogGroup"
+            ]
+          },
+          "DeleteProductLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+              },
+              "Handler": "src/handlers/deleteProduct.deleteProduct",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-prod-Products-Delete",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "prod",
+                  "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                  "PRODUCTS_TABLE": {
+                    "Ref": "ProductsTable"
+                  },
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteProductLogGroup"
+            ]
+          },
+          "ListAllProductsLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+              },
+              "Handler": "src/handlers/listAllProducts.listAllProducts",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-prod-Products-ListAllProducts",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "prod",
+                  "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                  "PRODUCTS_TABLE": {
+                    "Ref": "ProductsTable"
+                  },
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ListAllProductsLogGroup"
+            ]
+          },
+          "ListProductsBySellerLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+              },
+              "Handler": "src/handlers/listProductsBySeller.listProductsBySeller",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-prod-Products-ListProductsBySeller",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "prod",
+                  "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                  "PRODUCTS_TABLE": {
+                    "Ref": "ProductsTable"
+                  },
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ListProductsBySellerLogGroup"
+            ]
+          },
+          "UpdateStockLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+                "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+              },
+              "Handler": "src/handlers/updateStock.updateStock",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-prod-Products-UpdateStock",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "prod",
+                  "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                  "PRODUCTS_TABLE": {
+                    "Ref": "ProductsTable"
+                  },
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateStockLogGroup"
+            ]
+          },
+          "CreateProductLambdaVersionT5QRC47U8wXAi6hXY1Rz37JpbJ2Kvm6nZ5NKd8jaJU": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateProductLambdaFunction"
+              },
+              "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+            }
+          },
+          "GetProductLambdaVersion1JGdoVnfSRT498re6g46cXBDiEyfAFrCokJSRbolM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetProductLambdaFunction"
+              },
+              "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+            }
+          },
+          "DeleteProductLambdaVersionuegwQb7zY4mrma4TFx7EK8T5WpEFr5ib1JrUGIY118": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteProductLambdaFunction"
+              },
+              "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+            }
+          },
+          "UpdateProductLambdaVersionq1PhyaWGNwaLlPF0TpqkjCO7d0Iziwmni7a8D7WIY": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateProductLambdaFunction"
+              },
+              "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+            }
+          },
+          "ListAllProductsLambdaVersionRbIcim7xNo7BcrXlzNBu0fCv91fdYxx2KjmRznovsQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ListAllProductsLambdaFunction"
+              },
+              "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+            }
+          },
+          "UpdateStockLambdaVersionPTSxBpSYL4sQN72E30gBukkqTOMAU4Y129TTnyjgrnQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateStockLambdaFunction"
+              },
+              "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+            }
+          },
+          "ListProductsBySellerLambdaVersionHRAlWpBs5FaLzXYqC69TPLWrgZbY0yilpPnxthw5aZA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ListProductsBySellerLambdaFunction"
+              },
+              "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+            }
+          },
+          "ApiGatewayResourceProducts": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::ImportValue": "prod-MainRestApiRootResourceId"
+              },
+              "PathPart": "products",
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceProductsCreate": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceProducts"
+              },
+              "PathPart": "create",
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceProductsIdVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceProducts"
+              },
+              "PathPart": "{id}",
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceProductsIdVarStock": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceProductsIdVar"
+              },
+              "PathPart": "stock",
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceProductsUsers": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceProducts"
+              },
+              "PathPart": "users",
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceProductsUsersSelleridVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceProductsUsers"
+              },
+              "PathPart": "{sellerId}",
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodProductsCreateOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsCreate"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodProductsIdVarOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,PUT,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsIdVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodProductsOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProducts"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodProductsUsersSelleridVarOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsUsersSelleridVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodProductsIdVarStockOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PATCH'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsIdVarStock"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodProductsCreatePost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsCreate"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Fn::ImportValue": "prod-MainAuthorizerId"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "CreateProductLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "CreateProductLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodProductsIdVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsIdVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetProductLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "GetProductLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodProductsIdVarPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsIdVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Fn::ImportValue": "prod-MainAuthorizerId"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateProductLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "UpdateProductLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodProductsIdVarDelete": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "DELETE",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsIdVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Fn::ImportValue": "prod-MainAuthorizerId"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "DeleteProductLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "DeleteProductLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodProductsGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProducts"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ListAllProductsLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ListAllProductsLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodProductsUsersSelleridVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsUsersSelleridVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ListProductsBySellerLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ListProductsBySellerLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodProductsIdVarStockPatch": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PATCH",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProductsIdVarStock"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Fn::ImportValue": "prod-MainAuthorizerId"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateStockLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "UpdateStockLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1794013969855": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Fn::ImportValue": "prod-MainRestApiId"
+              },
+              "StageName": "prod"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodProductsCreateOptions",
+              "ApiGatewayMethodProductsIdVarOptions",
+              "ApiGatewayMethodProductsOptions",
+              "ApiGatewayMethodProductsUsersSelleridVarOptions",
+              "ApiGatewayMethodProductsIdVarStockOptions",
+              "ApiGatewayMethodProductsCreatePost",
+              "ApiGatewayMethodProductsIdVarGet",
+              "ApiGatewayMethodProductsIdVarPut",
+              "ApiGatewayMethodProductsIdVarDelete",
+              "ApiGatewayMethodProductsGet",
+              "ApiGatewayMethodProductsUsersSelleridVarGet",
+              "ApiGatewayMethodProductsIdVarStockPatch"
+            ]
+          },
+          "CreateProductLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateProductLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetProductLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetProductLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateProductLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateProductLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "DeleteProductLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteProductLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ListAllProductsLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ListAllProductsLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ListProductsBySellerLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ListProductsBySellerLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateStockLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateStockLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "prod-MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ProductsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "taller-products-prod-products",
+              "BillingMode": "PAY_PER_REQUEST",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "productId",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "sellerId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "productId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "GlobalSecondaryIndexes": [
+                {
+                  "IndexName": "SellerIndex",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "sellerId",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+            "Export": {
+              "Name": "sls-taller-products-prod-ServerlessDeploymentBucketName"
+            }
+          },
+          "CreateProductLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateProductLambdaVersionT5QRC47U8wXAi6hXY1Rz37JpbJ2Kvm6nZ5NKd8jaJU"
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-CreateProductLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetProductLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetProductLambdaVersion1JGdoVnfSRT498re6g46cXBDiEyfAFrCokJSRbolM"
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-GetProductLambdaFunctionQualifiedArn"
+            }
+          },
+          "DeleteProductLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteProductLambdaVersionuegwQb7zY4mrma4TFx7EK8T5WpEFr5ib1JrUGIY118"
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-DeleteProductLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateProductLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateProductLambdaVersionq1PhyaWGNwaLlPF0TpqkjCO7d0Iziwmni7a8D7WIY"
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-UpdateProductLambdaFunctionQualifiedArn"
+            }
+          },
+          "ListAllProductsLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ListAllProductsLambdaVersionRbIcim7xNo7BcrXlzNBu0fCv91fdYxx2KjmRznovsQ"
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-ListAllProductsLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateStockLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateStockLambdaVersionPTSxBpSYL4sQN72E30gBukkqTOMAU4Y129TTnyjgrnQ"
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-UpdateStockLambdaFunctionQualifiedArn"
+            }
+          },
+          "ListProductsBySellerLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ListProductsBySellerLambdaVersionHRAlWpBs5FaLzXYqC69TPLWrgZbY0yilpPnxthw5aZA"
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-ListProductsBySellerLambdaFunctionQualifiedArn"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/prod"
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-taller-products-prod-ServiceEndpoint"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "service: taller-products\r\nframeworkVersion: \"4\"\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs22.x\r\n  stage: ${opt:stage, 'develop'}\r\n  region: us-east-1\r\n  environment:\r\n    STAGE: ${self:provider.stage}\r\n    CORS_ORIGINS: ${file(./config/config-${self:provider.stage}.json):CORS_ORIGINS}\r\n    PRODUCTS_TABLE: !Ref ProductsTable\r\n  apiGateway:\r\n    restApiId: !ImportValue ${self:provider.stage}-MainRestApiId\r\n    restApiRootResourceId: !ImportValue ${self:provider.stage}-MainRestApiRootResourceId\r\n  iamRoleStatements:\r\n    - Effect: Allow\r\n      Action:\r\n        - logs:CreateLogGroup\r\n        - logs:CreateLogStream\r\n        - logs:PutLogEvents\r\n      Resource: \"*\"\r\n    - Effect: Allow\r\n      Action:\r\n        - dynamodb:PutItem\r\n        - dynamodb:GetItem\r\n        - dynamodb:UpdateItem\r\n        - dynamodb:DeleteItem\r\n        - dynamodb:Query\r\n        - dynamodb:Scan\r\n      Resource:\r\n        - !GetAtt ProductsTable.Arn\r\n        - !Sub \"${ProductsTable.Arn}/index/*\"\r\n\r\nfunctions:\r\n  createProduct:\r\n    name: taller-${self:provider.stage}-Products-Create\r\n    handler: src/handlers/createProduct.createProduct\r\n    events:\r\n      - http:\r\n          method: post\r\n          path: /products/create\r\n          cors:\r\n            origin: '*'\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n          authorizer:\r\n            type: CUSTOM\r\n            authorizerId: !ImportValue ${self:provider.stage}-MainAuthorizerId\r\n\r\n  getProduct:\r\n    name: taller-${self:provider.stage}-Products-GetProduct\r\n    handler: src/handlers/getProduct.getProduct\r\n    events:\r\n      - http:\r\n          method: get\r\n          path: /products/{id}\r\n          cors:\r\n            origin: '*'\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\n  updateProduct:\r\n    name: taller-${self:provider.stage}-Products-Update\r\n    handler: src/handlers/updateProduct.updateProduct\r\n    events:\r\n      - http:\r\n          method: put\r\n          path: /products/{id}\r\n          cors:\r\n            origin: '*'\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n          authorizer:\r\n            type: CUSTOM\r\n            authorizerId: !ImportValue ${self:provider.stage}-MainAuthorizerId\r\n\r\n  deleteProduct:\r\n    name: taller-${self:provider.stage}-Products-Delete\r\n    handler: src/handlers/deleteProduct.deleteProduct\r\n    events:\r\n      - http:\r\n          method: delete\r\n          path: /products/{id}\r\n          cors:\r\n            origin: '*'\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n          authorizer:\r\n            type: CUSTOM\r\n            authorizerId: !ImportValue ${self:provider.stage}-MainAuthorizerId\r\n\r\n  listAllProducts:\r\n    name: taller-${self:provider.stage}-Products-ListAllProducts\r\n    handler: src/handlers/listAllProducts.listAllProducts\r\n    events:\r\n      - http:\r\n          method: get\r\n          path: /products\r\n          cors:\r\n            origin: '*'\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\n  listProductsBySeller:\r\n    name: taller-${self:provider.stage}-Products-ListProductsBySeller\r\n    handler: src/handlers/listProductsBySeller.listProductsBySeller\r\n    events:\r\n      - http:\r\n          method: get\r\n          path: /products/users/{sellerId}\r\n          cors:\r\n            origin: '*'\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\n  updateStock:\r\n    name: taller-${self:provider.stage}-Products-UpdateStock\r\n    handler: src/handlers/updateStock.updateStock\r\n    events:\r\n      - http:\r\n          method: patch\r\n          path: /products/{id}/stock\r\n          cors:\r\n            origin: '*'\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n          authorizer:\r\n            type: CUSTOM\r\n            authorizerId: !ImportValue ${self:provider.stage}-MainAuthorizerId\r\n\r\nresources:\r\n  Resources:\r\n    ProductsTable:\r\n      Type: AWS::DynamoDB::Table\r\n      Properties:\r\n        TableName: ${self:service}-${self:provider.stage}-products\r\n        BillingMode: PAY_PER_REQUEST\r\n        AttributeDefinitions:\r\n          - AttributeName: productId\r\n            AttributeType: S\r\n          - AttributeName: sellerId\r\n            AttributeType: S\r\n        KeySchema:\r\n          - AttributeName: productId\r\n            KeyType: HASH\r\n        GlobalSecondaryIndexes:\r\n          - IndexName: SellerIndex\r\n            KeySchema:\r\n              - AttributeName: sellerId\r\n                KeyType: HASH\r\n            Projection:\r\n              ProjectionType: ALL",
+    "command": [
+      "deploy"
+    ],
+    "options": {
+      "stage": "prod",
+      "aws-profile": "serverless_user_personal"
+    },
+    "orgId": "9a0dcfd4-f23c-4769-b648-1d4e161ba853",
+    "orgName": "antonycast684",
+    "userId": "y3ZTcNhYH0v125N2w1",
+    "userName": "antonycast684",
+    "serviceProviderAwsAccountId": "588301175361",
+    "serviceProviderAwsCfStackName": "taller-products-prod",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:588301175361:stack/taller-products-prod/63b20e70-da48-11f1-aa29-12ffdc6cc163",
+    "serviceProviderAwsCfStackCreated": "2026-11-07T01:13:07.126Z",
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": "CREATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "ListProductsBySellerLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:588301175361:function:taller-prod-Products-ListProductsBySeller:1",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-taller-products-prod-ListProductsBySellerLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "UpdateStockLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:588301175361:function:taller-prod-Products-UpdateStock:1",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-taller-products-prod-UpdateStockLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "DeleteProductLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:588301175361:function:taller-prod-Products-Delete:1",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-taller-products-prod-DeleteProductLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "UpdateProductLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:588301175361:function:taller-prod-Products-Update:1",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-taller-products-prod-UpdateProductLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "CreateProductLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:588301175361:function:taller-prod-Products-Create:1",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-taller-products-prod-CreateProductLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ListAllProductsLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:588301175361:function:taller-prod-Products-ListAllProducts:1",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-taller-products-prod-ListAllProductsLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServiceEndpoint",
+        "OutputValue": "https://e35mmbdcvj.execute-api.us-east-1.amazonaws.com/prod",
+        "Description": "URL of the service endpoint",
+        "ExportName": "sls-taller-products-prod-ServiceEndpoint"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+        "ExportName": "sls-taller-products-prod-ServerlessDeploymentBucketName"
+      },
+      {
+        "OutputKey": "GetProductLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:588301175361:function:taller-prod-Products-GetProduct:1",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-taller-products-prod-GetProductLambdaFunctionQualifiedArn"
+      }
+    ],
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "The AWS CloudFormation template for this Serverless application",
+      "Resources": {
+        "CreateProductLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-prod-Products-Create"
+          }
+        },
+        "GetProductLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-prod-Products-GetProduct"
+          }
+        },
+        "UpdateProductLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-prod-Products-Update"
+          }
+        },
+        "DeleteProductLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-prod-Products-Delete"
+          }
+        },
+        "ListAllProductsLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-prod-Products-ListAllProducts"
+          }
+        },
+        "ListProductsBySellerLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-prod-Products-ListProductsBySeller"
+          }
+        },
+        "UpdateStockLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-prod-Products-UpdateStock"
+          }
+        },
+        "IamRoleLambdaExecution": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "taller-products",
+                      "prod",
+                      "lambda"
+                    ]
+                  ]
+                },
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogStream",
+                        "logs:CreateLogGroup",
+                        "logs:TagResource"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Create:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-GetProduct:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Update:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Delete:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListAllProducts:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListProductsBySeller:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-UpdateStock:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Create:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-GetProduct:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Update:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-Delete:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListAllProducts:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-ListProductsBySeller:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-prod-Products-UpdateStock:*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogGroup",
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "dynamodb:PutItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:UpdateItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:Query",
+                        "dynamodb:Scan"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::GetAtt": [
+                            "ProductsTable",
+                            "Arn"
+                          ]
+                        },
+                        {
+                          "Fn::Sub": "${ProductsTable.Arn}/index/*"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "Path": "/",
+            "RoleName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "taller-products",
+                  "prod",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "lambdaRole"
+                ]
+              ]
+            }
+          }
+        },
+        "CreateProductLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+            },
+            "Handler": "src/handlers/createProduct.createProduct",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-prod-Products-Create",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "prod",
+                "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                "PRODUCTS_TABLE": {
+                  "Ref": "ProductsTable"
+                },
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "CreateProductLogGroup"
+          ]
+        },
+        "GetProductLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+            },
+            "Handler": "src/handlers/getProduct.getProduct",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-prod-Products-GetProduct",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "prod",
+                "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                "PRODUCTS_TABLE": {
+                  "Ref": "ProductsTable"
+                },
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "GetProductLogGroup"
+          ]
+        },
+        "UpdateProductLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+            },
+            "Handler": "src/handlers/updateProduct.updateProduct",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-prod-Products-Update",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "prod",
+                "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                "PRODUCTS_TABLE": {
+                  "Ref": "ProductsTable"
+                },
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "UpdateProductLogGroup"
+          ]
+        },
+        "DeleteProductLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+            },
+            "Handler": "src/handlers/deleteProduct.deleteProduct",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-prod-Products-Delete",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "prod",
+                "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                "PRODUCTS_TABLE": {
+                  "Ref": "ProductsTable"
+                },
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "DeleteProductLogGroup"
+          ]
+        },
+        "ListAllProductsLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+            },
+            "Handler": "src/handlers/listAllProducts.listAllProducts",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-prod-Products-ListAllProducts",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "prod",
+                "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                "PRODUCTS_TABLE": {
+                  "Ref": "ProductsTable"
+                },
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "ListAllProductsLogGroup"
+          ]
+        },
+        "ListProductsBySellerLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+            },
+            "Handler": "src/handlers/listProductsBySeller.listProductsBySeller",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-prod-Products-ListProductsBySeller",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "prod",
+                "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                "PRODUCTS_TABLE": {
+                  "Ref": "ProductsTable"
+                },
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "ListProductsBySellerLogGroup"
+          ]
+        },
+        "UpdateStockLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+              "S3Key": "serverless/taller-products/prod/1794013980274-2026-11-07T01:13:00.274Z/taller-products.zip"
+            },
+            "Handler": "src/handlers/updateStock.updateStock",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-prod-Products-UpdateStock",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "prod",
+                "CORS_ORIGINS": "http://miaplicacion-frontend-develop.com",
+                "PRODUCTS_TABLE": {
+                  "Ref": "ProductsTable"
+                },
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "UpdateStockLogGroup"
+          ]
+        },
+        "CreateProductLambdaVersionT5QRC47U8wXAi6hXY1Rz37JpbJ2Kvm6nZ5NKd8jaJU": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "CreateProductLambdaFunction"
+            },
+            "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+          }
+        },
+        "GetProductLambdaVersion1JGdoVnfSRT498re6g46cXBDiEyfAFrCokJSRbolM": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "GetProductLambdaFunction"
+            },
+            "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+          }
+        },
+        "DeleteProductLambdaVersionuegwQb7zY4mrma4TFx7EK8T5WpEFr5ib1JrUGIY118": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "DeleteProductLambdaFunction"
+            },
+            "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+          }
+        },
+        "UpdateProductLambdaVersionq1PhyaWGNwaLlPF0TpqkjCO7d0Iziwmni7a8D7WIY": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "UpdateProductLambdaFunction"
+            },
+            "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+          }
+        },
+        "ListAllProductsLambdaVersionRbIcim7xNo7BcrXlzNBu0fCv91fdYxx2KjmRznovsQ": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "ListAllProductsLambdaFunction"
+            },
+            "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+          }
+        },
+        "UpdateStockLambdaVersionPTSxBpSYL4sQN72E30gBukkqTOMAU4Y129TTnyjgrnQ": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "UpdateStockLambdaFunction"
+            },
+            "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+          }
+        },
+        "ListProductsBySellerLambdaVersionHRAlWpBs5FaLzXYqC69TPLWrgZbY0yilpPnxthw5aZA": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "ListProductsBySellerLambdaFunction"
+            },
+            "CodeSha256": "lDcAbEJCdtb0t/Pe4/AGHvIEjlvQBneA4YV5PFFssnM="
+          }
+        },
+        "ApiGatewayResourceProducts": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Fn::ImportValue": "prod-MainRestApiRootResourceId"
+            },
+            "PathPart": "products",
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceProductsCreate": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceProducts"
+            },
+            "PathPart": "create",
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceProductsIdVar": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceProducts"
+            },
+            "PathPart": "{id}",
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceProductsIdVarStock": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceProductsIdVar"
+            },
+            "PathPart": "stock",
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceProductsUsers": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceProducts"
+            },
+            "PathPart": "users",
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceProductsUsersSelleridVar": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceProductsUsers"
+            },
+            "PathPart": "{sellerId}",
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodProductsCreateOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsCreate"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodProductsIdVarOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,PUT,GET'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsIdVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodProductsOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProducts"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodProductsUsersSelleridVarOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsUsersSelleridVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodProductsIdVarStockOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PATCH'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsIdVarStock"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodProductsCreatePost": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "POST",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsCreate"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "CUSTOM",
+            "AuthorizerId": {
+              "Fn::ImportValue": "prod-MainAuthorizerId"
+            },
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "CreateProductLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "CreateProductLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodProductsIdVarGet": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "GET",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsIdVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "NONE",
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "GetProductLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "GetProductLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodProductsIdVarPut": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "PUT",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsIdVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "CUSTOM",
+            "AuthorizerId": {
+              "Fn::ImportValue": "prod-MainAuthorizerId"
+            },
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "UpdateProductLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "UpdateProductLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodProductsIdVarDelete": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "DELETE",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsIdVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "CUSTOM",
+            "AuthorizerId": {
+              "Fn::ImportValue": "prod-MainAuthorizerId"
+            },
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "DeleteProductLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "DeleteProductLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodProductsGet": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "GET",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProducts"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "NONE",
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "ListAllProductsLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "ListAllProductsLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodProductsUsersSelleridVarGet": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "GET",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsUsersSelleridVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "NONE",
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "ListProductsBySellerLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "ListProductsBySellerLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodProductsIdVarStockPatch": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "PATCH",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProductsIdVarStock"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "CUSTOM",
+            "AuthorizerId": {
+              "Fn::ImportValue": "prod-MainAuthorizerId"
+            },
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "UpdateStockLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "UpdateStockLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayDeployment1794013969855": {
+          "Type": "AWS::ApiGateway::Deployment",
+          "Properties": {
+            "RestApiId": {
+              "Fn::ImportValue": "prod-MainRestApiId"
+            },
+            "StageName": "prod"
+          },
+          "DependsOn": [
+            "ApiGatewayMethodProductsCreateOptions",
+            "ApiGatewayMethodProductsIdVarOptions",
+            "ApiGatewayMethodProductsOptions",
+            "ApiGatewayMethodProductsUsersSelleridVarOptions",
+            "ApiGatewayMethodProductsIdVarStockOptions",
+            "ApiGatewayMethodProductsCreatePost",
+            "ApiGatewayMethodProductsIdVarGet",
+            "ApiGatewayMethodProductsIdVarPut",
+            "ApiGatewayMethodProductsIdVarDelete",
+            "ApiGatewayMethodProductsGet",
+            "ApiGatewayMethodProductsUsersSelleridVarGet",
+            "ApiGatewayMethodProductsIdVarStockPatch"
+          ]
+        },
+        "CreateProductLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "CreateProductLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "GetProductLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "GetProductLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "UpdateProductLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "UpdateProductLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "DeleteProductLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "DeleteProductLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "ListAllProductsLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "ListAllProductsLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "ListProductsBySellerLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "ListProductsBySellerLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "UpdateStockLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "UpdateStockLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "prod-MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "ProductsTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "taller-products-prod-products",
+            "BillingMode": "PAY_PER_REQUEST",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "productId",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "sellerId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "productId",
+                "KeyType": "HASH"
+              }
+            ],
+            "GlobalSecondaryIndexes": [
+              {
+                "IndexName": "SellerIndex",
+                "KeySchema": [
+                  {
+                    "AttributeName": "sellerId",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "serverless-framework-deployments-us-east-1-d646473f-5c25",
+          "Export": {
+            "Name": "sls-taller-products-prod-ServerlessDeploymentBucketName"
+          }
+        },
+        "CreateProductLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "CreateProductLambdaVersionT5QRC47U8wXAi6hXY1Rz37JpbJ2Kvm6nZ5NKd8jaJU"
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-CreateProductLambdaFunctionQualifiedArn"
+          }
+        },
+        "GetProductLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "GetProductLambdaVersion1JGdoVnfSRT498re6g46cXBDiEyfAFrCokJSRbolM"
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-GetProductLambdaFunctionQualifiedArn"
+          }
+        },
+        "DeleteProductLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "DeleteProductLambdaVersionuegwQb7zY4mrma4TFx7EK8T5WpEFr5ib1JrUGIY118"
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-DeleteProductLambdaFunctionQualifiedArn"
+          }
+        },
+        "UpdateProductLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "UpdateProductLambdaVersionq1PhyaWGNwaLlPF0TpqkjCO7d0Iziwmni7a8D7WIY"
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-UpdateProductLambdaFunctionQualifiedArn"
+          }
+        },
+        "ListAllProductsLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "ListAllProductsLambdaVersionRbIcim7xNo7BcrXlzNBu0fCv91fdYxx2KjmRznovsQ"
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-ListAllProductsLambdaFunctionQualifiedArn"
+          }
+        },
+        "UpdateStockLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "UpdateStockLambdaVersionPTSxBpSYL4sQN72E30gBukkqTOMAU4Y129TTnyjgrnQ"
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-UpdateStockLambdaFunctionQualifiedArn"
+          }
+        },
+        "ListProductsBySellerLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "ListProductsBySellerLambdaVersionHRAlWpBs5FaLzXYqC69TPLWrgZbY0yilpPnxthw5aZA"
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-ListProductsBySellerLambdaFunctionQualifiedArn"
+          }
+        },
+        "ServiceEndpoint": {
+          "Description": "URL of the service endpoint",
+          "Value": {
+            "Fn::Join": [
+              "",
+              [
+                "https://",
+                {
+                  "Fn::ImportValue": "prod-MainRestApiId"
+                },
+                ".execute-api.",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ".",
+                {
+                  "Ref": "AWS::URLSuffix"
+                },
+                "/prod"
+              ]
+            ]
+          },
+          "Export": {
+            "Name": "sls-taller-products-prod-ServiceEndpoint"
+          }
+        }
+      }
+    }
+  }
+}

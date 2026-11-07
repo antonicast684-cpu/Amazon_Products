@@ -1,0 +1,22 @@
+{
+  "name": "taller_products",
+  "version": "1.0.0",
+  "description": "Modulo para el taller de AWS con Serverless hecho para manejar las peticiones de los productos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typecheck": "tsc --noEmit",
+    "deploy:dev": "serverless deploy --stage develop --aws-profile serverless_user_personal",
+    "remove:dev": "serverless remove --stage develop --aws-profile serverless_user_personal",
+    "deploy:prod": "serverless deploy --stage prod --aws-profile serverless_user_personal",
+    "remove:prod": "serverless remove --stage prod --aws-profile serverless_user_personal"
+  },
+  "keywords": [
+    "AWS",
+    "Node.js",
+    "Serverless"
+  ],
+  "author": "Diego M",
+  "license": "ISC",
+  "dependencies": {}
+}
